@@ -11,7 +11,9 @@ import lombok.EqualsAndHashCode;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RegisterMembershipCommand extends SelfValidating<RegisterMembershipCommand> {
+public class ModifyMembershipCommamd extends SelfValidating<ModifyMembershipCommamd> {
+    @NotNull
+    private final String membershipId;
     @NotNull
     private final String name;
     @NotNull
@@ -24,7 +26,8 @@ public class RegisterMembershipCommand extends SelfValidating<RegisterMembership
     private final boolean isValid;
     private final boolean isCorp;
 
-    public RegisterMembershipCommand(String name, String email, String address, boolean isValid, boolean isCorp) {
+    public ModifyMembershipCommamd(String membershipId,String name, String email, String address, boolean isValid, boolean isCorp) {
+        this.membershipId = membershipId;
         this.name = name;
         this.email = email;
         this.address = address;

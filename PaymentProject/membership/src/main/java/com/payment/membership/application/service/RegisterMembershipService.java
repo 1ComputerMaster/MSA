@@ -28,7 +28,7 @@ public class RegisterMembershipService implements RegisterMembershipUsecase {
                 new Membership.MembershipEmail(command.getEmail()),
                 new Membership.MembershipAddress(command.getAddress()),
                 new Membership.MembershipValid(command.isValid()),
-                new Membership.MembershipCorp(command.isValid())
+                new Membership.MembershipCorp(command.isCorp())
          );
 
 

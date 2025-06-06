@@ -1,7 +1,7 @@
 package com.payment.membership.application.port.in;
 
 import com.payment.membership.domain.Membership;
-import common.Usecase;
+import com.payment.common.Usecase;
 
 @Usecase
 public interface RegisterMembershipUsecase {

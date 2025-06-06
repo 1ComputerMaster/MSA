@@ -1,4 +1,5 @@
 rootProject.name = 'payment'
 include 'payment'
 include 'membership'
+include 'common'
 

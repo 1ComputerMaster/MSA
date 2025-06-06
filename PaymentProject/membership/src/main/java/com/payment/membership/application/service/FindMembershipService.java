@@ -6,7 +6,7 @@ import com.payment.membership.application.port.in.FindMembershipCommand;
 import com.payment.membership.application.port.in.FindMembershipUsecase;
 import com.payment.membership.application.port.out.FindMembershipPort;
 import com.payment.membership.domain.Membership;
-import common.Usecase;
+import com.payment.common.Usecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
