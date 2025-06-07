@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.payment.membership'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 
 java {
     toolchain {
@@ -45,8 +45,8 @@ tasks.named('test') {
 
 docker {
     println(tasks.bootJar.outputs.files)
-    name rootProject.name+'-'+project.name + ":" + version
-    dockerfile file('./Dockerfile')
+    name rootProject.name+'-'+project.name + "-service" + ":" + version
+    dockerfile file('../Dockerfile')
     files tasks.bootJar.outputs.files
     buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
 }
