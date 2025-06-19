@@ -48,3 +48,22 @@
    1. Application level이면 Log 확인
    2. 로그로 단순 확인이 어려울 시 Tracing 확인
    3. 인프라 수준의 문제라면 정확한 원인 파악 필요
+
+### 로깅 (Logging)
+
+- Disk 내의 Log file 위치 -> Logstash, Fluentbit, Fluentd(로그 수집기) -> Loki, Elastic Search (indexing) -> Kibana, Grafana
+
+### 메트릭 (Metric)
+
+- System metric(Node, Pod, etc...) -> Promethus, InfluxDB (Pull 방식의 구현, 일부 Micrometer와 같은 JVM Library 지원 건들은 직접 Push 방식으로 구현되기도 한다.) -> Grafana
+
+### 트레이싱 (Tracing)
+
+- 하나의 소스(트랜잭션)에 대해서, 여러개의 서비스에서 어떤 과정을 거쳐 수행되었는지 확인이 필요합니다.
+- Transaction -> Jaeger, ZipKin, Tempo
+- ![alt text](ImageDirectory/트레이싱.png)
+  
+### 서비스 메시 (Service Mesh)
+
+- 어느 서비스가 어느 서비스를 호출하고 있는지, 어디로 트래픽이 발생하고 있는지 모니터링이 될 수 있도록 관리
+- istio, envoy-proxy
