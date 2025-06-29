@@ -9,7 +9,7 @@ services:
       - ./db/initdb.d:/docker-entrypoint-initdb.d
     env_file: .env
     ports:
-      - "3306:3306"
+      - "8079:3306"
     environment:
       - MYSQL_HOST=localhost
       - MYSQL_PORT=3306
@@ -40,6 +40,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:9092
+      - LOGGING_TOPIC=payment.logging.out.stdout
 
   banking-service:
     image: payment-banking-service:0.0.1-SNAPSHOT
@@ -56,7 +58,111 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:9092
+      - LOGGING_TOPIC=payment.logging.out.stdout
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
 
+  money-service:
+    image: payment-money-service:0.0.1-SNAPSHOT
+    networks:
+      - payment_network
+    ports:
+      - "8083:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:9092
+      - LOGGING_TOPIC=payment.logging.out.stdout
+
+  logging-consumer:
+    image: payment-logging-consumer:0.0.1-SNAPSHOT
+    networks:
+      - payment_network
+    ports:
+      - "8084:8080"
+    depends_on:
+      - mysql
+      - kafka
+      - zookeeper
+    environment:
+      # Spring DataSource (기존)
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+      # --- Kafka / Logging 설정 ---
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_CONSUMER_GROUP_ID=logging-consumer-group
+      - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=earliest
+      - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+      - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+
+      # logging.topic 프로퍼티
+      - LOGGING_TOPIC=payment.logging.out.stdout
+
+
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    ports: ["2181:2181"]
+    networks: [payment_network]
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_TLS_CLIENT_AUTH=none
+      - ZOO_TLS_QUORUM_CLIENT_AUTH=none
+
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    networks:
+      - payment_network
+    environment:
+      # ZooKeeper 연결
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # 브로커 ID
+      KAFKA_BROKER_ID: 1
+
+      # 리스너: 브로커가 0.0.0.0:9092 에 바인딩
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      # 보안 프로토콜 매핑 (리스너 이름:프로토콜)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+
+      # 클러스터 내부 통신용 리스너 이름
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # 오프셋 토픽 복제 계수 (단일 노드라면 1)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    networks:
+      - payment_network
+    ports:
+      - "8989:8080"
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
 networks:
   payment_network:
     driver: bridge
