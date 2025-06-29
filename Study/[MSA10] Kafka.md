@@ -13,7 +13,7 @@
 
 ## Kafka의 기본 개념
 
-![alt text](ImageDirectory/카프카.png)
+![alt text](../ImageDirectory/카프카.png)
 
 **Producer**
 - 메세지를 발행하는 **주체**

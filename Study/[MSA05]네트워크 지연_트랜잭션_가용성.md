@@ -33,7 +33,7 @@
 
 - 기존에 식별된 요청으로 나누어 요청하는 패턴
 
-![alt text](ImageDirectory/스트랭글러패턴.png)
+![alt text](../ImageDirectory/스트랭글러패턴.png)
 
 ### 스트랭글러 패턴 in 통합 글루 패턴
 
@@ -41,5 +41,5 @@
 - 모놀리스 Application과 Micro Service간의 중간 통신 모듈을 두고 서비스합니다.
 - 특정 서비스만 일부 Micro Service가 진행이 되었다면 이를 이용해서 서비스의 작업을 진행 시키고 Event 처리를 통해서 모놀리스 Application이 받아서 쓰는 구조입니다.
 
-![alt text](ImageDirectory/통합글루.png)
+![alt text](../ImageDirectory/통합글루.png)
 

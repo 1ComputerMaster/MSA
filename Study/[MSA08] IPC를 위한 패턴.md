@@ -2,7 +2,7 @@
 
 - IPC : Inter Process Communication
 - "프로세스 간 통신" -> "서비스 간 통신" -> MSA
-- ![alt text](ImageDirectory/OSI7Layer_TCPIP_Layer.png)
+- ![alt text](../ImageDirectory/OSI7Layer_TCPIP_Layer.png)
 - TCP -> HTTP
 - 일반적인 IPC는 크게 2가지로 나뉨
   
@@ -56,7 +56,7 @@
 
 ### Kafka의 구성 요소
 
-![alt text](ImageDirectory/카프카.png)
+![alt text](../ImageDirectory/카프카.png)
 
 - Topic : Producer - Consumer의 메세징 객체
 - Partition : Topic을 물리적으로 분할하고, 처리

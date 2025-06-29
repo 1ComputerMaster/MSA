@@ -61,7 +61,7 @@
 
 - 하나의 소스(트랜잭션)에 대해서, 여러개의 서비스에서 어떤 과정을 거쳐 수행되었는지 확인이 필요합니다.
 - Transaction -> Jaeger, ZipKin, Tempo
-- ![alt text](ImageDirectory/트레이싱.png)
+- ![alt text](../ImageDirectory/트레이싱.png)
   
 ### 서비스 메시 (Service Mesh)
 

@@ -19,7 +19,7 @@
 - **도메인** 복잡성을 이해하고, 도메인의 문제를 해결하는 것에 집중하여 분리/분해
 - **즉, MSA에서의 하위 도메인을 이용한 분리/분해는 필요에 따라서 Business Capability를 높이기 위해 분리/분해 하는 것이 목적**
 
-![alt text](ImageDirectory//분해.png)
+![alt text](../ImageDirectory//분해.png)
 
 
 # What is DDD?
@@ -46,7 +46,7 @@
 - e.g. Order Aggregate: "Order(Aggregate root), OrderItem"
 - 도메인 모델은 각각의 도메인을 이해하기 위한 수단이지 실제 서비스를 나누는 개념이 아니다.
 
-![alt text](ImageDirectory/도메인_모델.png)
+![alt text](../ImageDirectory/도메인_모델.png)
 
 ### Bounded Context
 

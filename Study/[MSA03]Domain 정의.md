@@ -9,7 +9,7 @@
 - 그러면 페이 서비스에서 머니를 충전하기 위해서는 계좌 연결 절차가 필수적임
   - 왜냐하면 실제 계좌에서 머니를 빼서 충전해야 하니까요.
   - 머니를 충전한다는 말은 페이먼트 시스템의 법인 계좌에 현금이 충전된다는 의미임
-- ![alt text](ImageDirectory/선불충전금액.png)
+- ![alt text](../ImageDirectory/선불충전금액.png)
 
 ## 머니의 이해 - 2 (펌뱅킹)
 
@@ -55,8 +55,8 @@
 
 ## 모놀리스 페이먼트에서의 멀티 모듈 페이먼트 시스템
 
-![alt text](ImageDirectory/모놀리스_페이먼트.png)
+![alt text](../ImageDirectory/모놀리스_페이먼트.png)
 
-![alt text](ImageDirectory/페이먼트_모놀리스스_아키텍처.png)
+![alt text](../ImageDirectory/페이먼트_모놀리스스_아키텍처.png)
 
-- One DB 기준으로 논리적인 아키텍처의 설계를 진행하였습니다.
+- One DB 기준

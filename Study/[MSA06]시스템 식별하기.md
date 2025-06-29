@@ -29,7 +29,7 @@
 ## 시나리오 케이스 정의
 
 - given - when - then
-![alt text](ImageDirectory/시나리오_케이스.png)
+![alt text](../ImageDirectory/시나리오_케이스.png)
 
 
 ## 시스템 커멘드 정의
@@ -38,12 +38,12 @@
 - 서비스를 식별하고 효과적인 아키텍처를 디자인하기 위한 작업이다.
 - **시스템이 무슨일을 해야하고 어떤 비즈니스/엔지니어링 특성을 가지며 이로 인해 아키텍처에 미치는 영향을 파악**
 
-![alt text](ImageDirectory/시스템_커멘드.png)
+![alt text](../ImageDirectory/시스템_커멘드.png)
 
 
 ## 식별된 서비스
 
-![alt text](ImageDirectory/서비스_아키텍처.png)
+![alt text](../ImageDirectory/서비스_아키텍처.png)
 
-![alt text](ImageDirectory/서비스_정의서.png)
+![alt text](../ImageDirectory/서비스_정의서.png)
 - 앞으로 복잡해질수도 있는  도메인을 잘 분리해서 비즈니스 캐퍼블리티를 제대로 유지하면서 처리하기 위해서는 정의가 매우 중요하다.

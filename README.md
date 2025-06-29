@@ -7,7 +7,7 @@
 
 ## 📦 프로젝트 개요
 
-PaymentProject는 MSA(Microservice Architecture)와 이벤트 기반 CQRS 패턴을 적용하여 **회원 관리**, **계좌 관리**, **송금(개발 예정)**, **결제(개발 예정)**, **정산(개발 예정)** 기능을 분리된 서비스로 구현한 결제 시스템 프로토타입입니다.  
+PaymentProject는 MSA(Microservice Architecture)와 이벤트 기반 CQRS 패턴(예정)을 적용하여 **뱅킹 시스템**,**회원 관리**, **계좌 관리**, **송금(개발 예정)**, **결제(개발 예정)**, **정산(개발 예정)** 기능을 분리된 서비스로 구현한 결제 시스템 프로토타입입니다.  
 
 각 서비스는 독립적으로 배포·운영되며, Docker Compose 환경에서 손쉽게 로컬 구동이 가능합니다.
 
@@ -18,14 +18,14 @@ PaymentProject는 MSA(Microservice Architecture)와 이벤트 기반 CQRS 패턴
 ```text
 ┌─────────────┐ ⟷ ┌──────────────┐ ⟷ ┌──────────────┐ ⟷ ┌──────────────┐
 │ membership  │    │ banking      │    │ money        │    │ remittance   │
-│  -service   │ ⟷ │  -service    │ ⟷ │  -service    │ ⟷ │  -service    │
+│  -service   │ ⟷ │  -service    │ ⟷ │  -service    │ ⟷ │-service(예정)│
 └─────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
         ⟷                                         ⟷
         │                                         │
         ⟷                                         ⟷
 ┌──────────────┐ ⟷ ┌──────────────┐ ⟷ ┌──────────────┐
-│ payment-     │    │ settlement-  │    │ membership   │
-│ service      │ ⟷ │ service      │ ⟷ │ -service     │
+│ pay-         │    │ settlement-  │    │ membership   │
+│ service(예정)│ ⟷ │ service(예정)│ ⟷ │ -service     │
 └──────────────┘    └──────────────┘    └──────────────┘
 
 
@@ -120,8 +120,6 @@ docker-compose up --build -d
 ## ✅ 특징 & 배운 점
 - **MSA 분할 설계**: 서비스 책임을 명확히 분리하고 독립 배포 가능
 
-- **CQRS & Event Sourcing**: Axon Framework 를 활용해 명령(Command)과 조회(Query) 모델 분리
-
 - **비동기 메시징**: Kafka 를 통한 이벤트 스트리밍, 비동기 확장성 확보
 
 - **Docker 환경 자동화**: 개발 초기부터 Docker Compose 로 통합 환경 구성
@@ -134,3 +132,5 @@ docker-compose up --build -d
 **Auto-Scaling**: Kubernetes 클러스터 배포
 
 **Observability**: Prometheus / Grafana 모니터링
+
+**CQRS & Event Sourcing**: Axon Framework 를 활용해 명령(Command)과 조회(Query) 모델 분리

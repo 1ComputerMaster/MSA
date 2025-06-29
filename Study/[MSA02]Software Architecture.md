@@ -53,6 +53,6 @@
   - 어뎁터의 작용을 추상화 하여 나타냄
   - 비즈니스 로직의 입장에서는 DB 접근을 위해서 정의한 Repository는 아웃바운드 포트
 
-![img.png](ImageDirectory/헥사고날.png)
+![img.png](../ImageDirectory/헥사고날.png)
 
 **결론** : MSA는 다수의 마이크로 서비스와 소프트웨어 아키텍처의 모음 이므로 빠른 Business Capability 에 대응하기 위해서 헥사고날 아키텍처가 필요하다.
