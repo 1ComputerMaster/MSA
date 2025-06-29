@@ -1,23 +1,14 @@
 package com.payment.banking.application.service;
 
-import com.payment.banking.adapter.out.persistence.RegisteredBankAccountJpaEntity;
-import com.payment.banking.adapter.out.persistence.RegisteredBankAccountMapper;
 import com.payment.banking.adapter.out.persistence.RequestFirmbankJpaEntity;
 import com.payment.banking.adapter.out.persistence.RequestFirmbankingMapper;
-import com.payment.banking.adapter.out.persistence.external.bank.BankAccount;
-import com.payment.banking.adapter.out.persistence.external.bank.ExternalFirmbankingRequest;
-import com.payment.banking.adapter.out.persistence.external.bank.FirmbankingResult;
-import com.payment.banking.adapter.out.persistence.external.bank.GetBankAccountRequest;
+import com.payment.banking.adapter.out.external.bank.ExternalFirmbankingRequest;
+import com.payment.banking.adapter.out.external.bank.FirmbankingResult;
 import com.payment.banking.application.port.in.FirmbankingRequestCommand;
-import com.payment.banking.application.port.in.RegisteredBankAccountCommand;
-import com.payment.banking.application.port.in.RegisteredBankAccountUsecase;
 import com.payment.banking.application.port.in.RequestFirmbankingUsecase;
-import com.payment.banking.application.port.out.RegisterBankAccountPort;
-import com.payment.banking.application.port.out.RequestBankAccountInfoPort;
 import com.payment.banking.application.port.out.RequestExternalFirmbankingPort;
 import com.payment.banking.application.port.out.RequestFirmBankingPort;
 import com.payment.banking.domain.FirmbankingRequest;
-import com.payment.banking.domain.RegisteredBankAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

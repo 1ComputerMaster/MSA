@@ -1,4 +1,4 @@
-package com.payment.banking.adapter.out.persistence.external.bank;
+package com.payment.banking.adapter.out.external.bank;
 
 import lombok.Data;
 

@@ -2,10 +2,12 @@ package com.payment.banking.application.service;
 
 import com.payment.banking.adapter.out.persistence.RegisteredBankAccountJpaEntity;
 import com.payment.banking.adapter.out.persistence.RegisteredBankAccountMapper;
-import com.payment.banking.adapter.out.persistence.external.bank.BankAccount;
-import com.payment.banking.adapter.out.persistence.external.bank.GetBankAccountRequest;
+import com.payment.banking.adapter.out.external.bank.BankAccount;
+import com.payment.banking.adapter.out.external.bank.GetBankAccountRequest;
 import com.payment.banking.application.port.in.RegisteredBankAccountCommand;
 import com.payment.banking.application.port.in.RegisteredBankAccountUsecase;
+import com.payment.banking.application.port.out.GetMembershipPort;
+import com.payment.banking.application.port.out.MembershipStatus;
 import com.payment.banking.application.port.out.RegisterBankAccountPort;
 import com.payment.banking.application.port.out.RequestBankAccountInfoPort;
 import com.payment.banking.domain.RegisteredBankAccount;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class RegisterBankAccountService implements RegisteredBankAccountUsecase {
+    private final GetMembershipPort getMembershipPort;
     private final RegisterBankAccountPort registerBankAccountPort;
     private final RegisteredBankAccountMapper registeredBankAccountMapper;
     private final RequestBankAccountInfoPort requestBankAccountInfoPort;
@@ -24,6 +27,13 @@ public class RegisterBankAccountService implements RegisteredBankAccountUsecase 
     public RegisteredBankAccount registerBankAccount(RegisteredBankAccountCommand command) {
         //Business Logic
         // 1. 외부 실제 은행에 등록된 계좌인지 확인하다.
+        MembershipStatus membershipStatus = getMembershipPort.getMembership(command.getMembershipId());
+
+        if (!membershipStatus.isValid()) {
+            // 회원이 유효하지 않다면, 예외를 던진다.
+            throw new IllegalArgumentException("Invalid membership ID: " + command.getMembershipId());
+        }
+
         // 외부의 은행에 이 계좌가 정상인지 확인을 해야 한다.
         // Business Logic to External System
         BankAccount accountInfo = requestBankAccountInfoPort.getBankAccountInfo(

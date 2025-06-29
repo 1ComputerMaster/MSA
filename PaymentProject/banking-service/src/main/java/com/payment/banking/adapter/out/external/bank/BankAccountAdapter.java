@@ -1,6 +1,5 @@
-package com.payment.banking.adapter.out.persistence.external.bank;
+package com.payment.banking.adapter.out.external.bank;
 
-import com.payment.banking.adapter.out.persistence.SpringDataRegisteredBankAccountRepository;
 import com.payment.banking.application.port.out.RequestBankAccountInfoPort;
 import com.payment.banking.application.port.out.RequestExternalFirmbankingPort;
 import com.payment.common.ExternalSystemAdapter;
