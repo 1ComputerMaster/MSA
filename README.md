@@ -117,6 +117,8 @@ docker-compose up --build -d
 
 - http://localhost:8083/swagger-ui.html (결제·정산)
 
+- http://localhost:8989 (Kafka-UI)
+
 ## ✅ 특징 & 배운 점
 - **MSA 분할 설계**: 서비스 책임을 명확히 분리하고 독립 배포 가능
 
