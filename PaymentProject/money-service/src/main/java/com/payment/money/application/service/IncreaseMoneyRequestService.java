@@ -10,6 +10,7 @@ import com.payment.money.application.port.in.IncreaseMoneyChangingCommand;
 import com.payment.money.application.port.in.IncreaseMoneyRequestUsecase;
 import com.payment.money.application.port.out.GetMembershipPort;
 import com.payment.money.application.port.out.IncreaseMoneyPort;
+import com.payment.money.application.port.out.MembershipStatus;
 import com.payment.money.application.port.out.SendRecharingMoneyTaskPort;
 import com.payment.money.domain.MemberMoney;
 import com.payment.money.domain.MoneyChangingRequest;
@@ -37,9 +38,12 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase 
         // 머니의 충전. 증액 과정
 
         //1. 고객의 정보가 정상인지 확인 (멤버 서비스)
-        membershipPort.getMembership(command.getTargetMembershipId());
+        MembershipStatus membershipStatus = membershipPort.getMembership(command.getTargetMembershipId());
+
         //2. 고객에 연동된 계좌가 있는지, 그리고 그것이 정상적인지 확인, 고객의 연동된 계좌의 잔액이 충분한지도 확인 (뱅킹)
-        
+        if(!membershipStatus.isValid()) {
+            throw new IllegalArgumentException("Invalid membership ID: " + command.getTargetMembershipId());
+        }
         //3. 법인 계좌 상태도 정상인지 확인 (뱅킹)
         
         //4. 증액을 위한 "기록". 요청 상태로  MoneyChangingRequest 생성 (MoneyChangingRequest)
@@ -107,7 +111,6 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase 
         // Task Produce
         sendRecharingMoneyTaskPort.sendRechargingMoneyTask(task);
         countDownLatchManager.addCountDownLatch(task.getTaskID());
-
 
         // 3. Wait
         // TODO Redission 사용하여도 좋을 듯
