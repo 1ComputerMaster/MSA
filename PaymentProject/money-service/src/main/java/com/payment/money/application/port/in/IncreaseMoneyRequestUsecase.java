@@ -9,4 +9,5 @@ public interface IncreaseMoneyRequestUsecase {
      * @param request 충전 요청 정보
      */
     MoneyChangingRequest increaseMoney(IncreaseMoneyChangingCommand request);
+    MoneyChangingRequest increaseMoneyAsync(IncreaseMoneyChangingCommand request);
 }

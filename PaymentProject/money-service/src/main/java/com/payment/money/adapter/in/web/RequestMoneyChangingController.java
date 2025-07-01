@@ -14,7 +14,7 @@ public class RequestMoneyChangingController {
     private final IncreaseMoneyRequestUsecase increaseMoneyRequestUsecase;
 
     @PostMapping(path = "/money/increase/")
-    MoneyChangingResultDetail registerMembership(@RequestBody IncreaseMoneyChangingRequest request){
+    MoneyChangingResultDetail increaseMoneyChaningRequest(@RequestBody IncreaseMoneyChangingRequest request){
         IncreaseMoneyChangingCommand command = IncreaseMoneyChangingCommand.builder()
                 .targetMembershipId(request.getTargetMembershipId())
                 .amount(request.getAmount())
@@ -28,6 +28,25 @@ public class RequestMoneyChangingController {
                 0, // 증액 타입은 0으로 고정
                     1// 성공 상태로 고정
                 );
+        return resultDetail;
+    }
+
+
+    @PostMapping(path = "/money/increase-async/")
+    MoneyChangingResultDetail increaseMoneyChaningRequestAsync(@RequestBody IncreaseMoneyChangingRequest request){
+        IncreaseMoneyChangingCommand command = IncreaseMoneyChangingCommand.builder()
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
+
+        MoneyChangingRequest moneyChangingRequest = increaseMoneyRequestUsecase.increaseMoneyAsync(command);
+
+        MoneyChangingResultDetail resultDetail = new MoneyChangingResultDetail(
+                moneyChangingRequest.getMoneyChangingRequestId(),
+                moneyChangingRequest.getChangingMoneyAmount(),
+                0, // 증액 타입은 0으로 고정
+                1// 성공 상태로 고정
+        );
         return resultDetail;
     }
 

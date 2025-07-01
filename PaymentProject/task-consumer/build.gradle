@@ -4,11 +4,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     id("com.palantir.docker") version "0.36.0"
 }
-ext{
-    axonVersion = "4.6.0"
-}
 
-group = 'com.payment.money'
+group = 'com.payment.taskconsumer'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -39,9 +36,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation project(path: ':common')
-    implementation 'org.apache.kafka:kafka-clients:3.5.1'
+    implementation 'org.springframework.kafka:spring-kafka'
 
+    implementation project(path: ':common')
 }
 
 tasks.named('test') {
@@ -50,7 +47,7 @@ tasks.named('test') {
 
 docker {
     println(tasks.bootJar.outputs.files)
-    name rootProject.name + '-' + project.name + ":" + version
+    name rootProject.name +'-'+ project.name + ":" + version
     dockerfile file('../Dockerfile')
     files tasks.bootJar.outputs.files
     buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])

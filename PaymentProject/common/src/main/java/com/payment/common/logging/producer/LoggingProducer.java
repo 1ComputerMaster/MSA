@@ -40,7 +40,7 @@ public class LoggingProducer {
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, message);
         producer.send(record, (metadata, exception) -> {
             if (exception != null) {
-                exception.printStackTrace(); //TODO : 실제 운영시에는 없어져야 하는 부분임
+                exception.printStackTrace(); // TODO : 실제 운영시에는 없어져야 하는 부분임
                 // 전송 중 예외 발생 시 stderr 혹은 로거로 기록
                 System.err.println("LoggingProducer send failed: " + exception.getMessage());
             }
