@@ -35,6 +35,10 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
@@ -53,6 +57,10 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
@@ -72,6 +80,10 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
@@ -178,7 +190,7 @@ services:
     environment:
       # Spring DataSource (기존)
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluserS
+      - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -190,7 +202,7 @@ services:
       - TASK_RESULT_TOPIC=payment.task.result.topic
 
   remittance-service:
-    image: payment-remittance-service:1.0.0
+    image: payment-remittance-service:0.0.1-SNAPSHOT
     networks:
       - payment_network
     ports:
@@ -207,13 +219,47 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:9092
       - LOGGING_TOPIC=payment.logging.out.stdout
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
       - SERVICE_BANKING_URL=http://banking-service:8080
       - SERVICE_MONEY_URL=http://money-service:8080
+
+  axon-server:
+    image: axoniq/axonserver:4.6.3-jdk-17-dev   # ← 존재하는 태그로 교체 (또는 4.6.3-jdk-17-dev 등)
+    container_name: axon-server
+    networks:
+      - payment_network
+    ports:
+      - "8124:8124"   # gRPC
+      - "8024:8024"   # HTTP UI
+    volumes:
+      - ./axon-server-se/data:/axonserver/data
+      - ./axon-server-se/events:/axonserver/events
+      - ./axon-server-se/config:/axonserver/config:ro
+
+
+volumes:
+  axonserver-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD}/axon-server-se/data
+  axonserver-events:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD}/axon-server-se/events
+  axonserver-config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD}/axon-server-se/config
 
 networks:
   payment_network:
