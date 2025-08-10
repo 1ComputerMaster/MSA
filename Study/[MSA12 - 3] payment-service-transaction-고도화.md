@@ -44,3 +44,24 @@
 -> 사실상, 실패하여도 문제가 되지는 않는다. (내 돈이 사라진 것이 아니기 때문에 고객 영향도가 크지 않다고 볼 수 있습니다.)
 
 **결론 : 트랜잭션 구현을 굳이 해야 할 필요가 없다.**
+
+
+## Transacion을 위해서 Saga Pattern을 사용하자
+
+### 충전 서비스에 Saga Pattern을 적용해보자
+
+- 기존 서비스는 충전 서비스에서 머니 충전 시에 실패하게 되면 머니 서비스에서 잔액 업데이트를 다시 보상 트랜잭션을 통해서 진행했었습니다.
+
+- (AS-IS) 기존 업데이트 방식 : Banking 서비스의 계좌 연결 시 그대로 업데이트 되어짐
+- (TO-BE) 변경된 업데이트 방식 : Banking 서비스의 계좌 연결 시 업데이트가 필요할 경우, Command Handler (Axon Framework), Command를 통해서 계좌 연결 요청의 Command를 Event Queue로 넣어버립니다.
+이후, 내부 Consumer가 받아서 Event Store에 넣고 Event Sourcing을 통해서 Axon Framework의 Aggregate 형태로 변환이 되어지고 DB에 저장이 됩니다.
+
+  > 일반적인 서비스에서 큐에 넣는 방식이 무조건 DB에 직접 업데이트 해주는 방식보다 성공률이 높습니다. <br/>
+  > 그래서 EDA 구조는 거의 대부분 요청에 대해서 큐를 사용합니다. <br/>
+  > 어떻게든 Queue에만 넣으면 DB 상태가 다시 복구가 되면 넣기만 하면 되고 Event Queue에서 문제가 생기더라도 Event Store에 적재된 데이터를 기반으로 정합성을 맞추면 됩니다.
+
+### Axon Framework를 적용한 머니 서비스 리팩토링 플랜
+
+- **EDA**(Event Driven Architecture) 기반으로 리팩토링
+- 충전 "Saga" 정의 후 Pattern 적용, Test Monitoring 추가
+- 강제로 Transaction을 실패하는 케이스를 정의하고 **성공하는 경우**, **그렇지 않은 경우** 를 예측 할 수 있게 만들어야 함
