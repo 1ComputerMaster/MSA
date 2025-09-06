@@ -10,4 +10,6 @@ public interface IncreaseMoneyRequestUsecase {
      */
     MoneyChangingRequest increaseMoney(IncreaseMoneyChangingCommand request);
     MoneyChangingRequest increaseMoneyAsync(IncreaseMoneyChangingCommand request);
+
+    void increaseMoneyRequestByEvent(IncreaseMoneyChangingCommand command);
 }

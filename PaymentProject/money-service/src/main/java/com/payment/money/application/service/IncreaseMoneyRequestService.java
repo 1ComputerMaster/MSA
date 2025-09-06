@@ -3,11 +3,11 @@ package com.payment.money.application.service;
 import com.payment.common.CountDownLatchManager;
 import com.payment.common.RechargingMoneyTask;
 import com.payment.common.SubTask;
+import com.payment.money.adapter.axon.command.MemberMoneyCreatedCommand;
 import com.payment.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.payment.money.adapter.out.persistence.MoneyChangingRequestJpaEntity;
 import com.payment.money.adapter.out.persistence.MoneyChangingRequestMapper;
-import com.payment.money.application.port.in.IncreaseMoneyChangingCommand;
-import com.payment.money.application.port.in.IncreaseMoneyRequestUsecase;
+import com.payment.money.application.port.in.*;
 import com.payment.money.application.port.out.GetMembershipPort;
 import com.payment.money.application.port.out.IncreaseMoneyPort;
 import com.payment.money.application.port.out.MembershipStatus;
@@ -15,6 +15,7 @@ import com.payment.money.application.port.out.SendRecharingMoneyTaskPort;
 import com.payment.money.domain.MemberMoney;
 import com.payment.money.domain.MoneyChangingRequest;
 import lombok.RequiredArgsConstructor;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +27,14 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase {
+public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase, CreateMemberMoneyUseCase {
     private final CountDownLatchManager countDownLatchManager;
     private final SendRecharingMoneyTaskPort sendRecharingMoneyTaskPort;
     private final MoneyChangingRequestMapper moneyChangingRequestMapper;
     private final IncreaseMoneyPort increaseMoneyPort;
     private final GetMembershipPort membershipPort;
+    private final CommandGateway commandGateway;
+    private final CreateMemberMoneyPort createMemberMoneyPort;
     @Override
     public MoneyChangingRequest increaseMoney(IncreaseMoneyChangingCommand command) {
         
@@ -145,5 +148,34 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase 
             }
         }
         return null;
+    }
+
+    @Override
+    public void increaseMoneyRequestByEvent(IncreaseMoneyChangingCommand command) {
+
+    }
+
+    @Override
+    public void createMemberMoney(CreateMemberMoneyCommand command) {
+        //맴버에 Axon Framework에 의존하는 Command를 만듦
+        // @CommandHandler로 전달하면 Event Queue에서 관리되는 Axon 객체 값이 됨
+        // 헨들링하는 생성자는 다시 Event를 만들고 실제 이벤ㄴ트를 소싱함
+        // 그 이벤트로 부터 맴버 어그리게이트를 만듦
+        MemberMoneyCreatedCommand axonCommand = new MemberMoneyCreatedCommand(command.getMembershipId());
+        commandGateway.send(axonCommand)
+            //이벤트 소싱이 끝날 때 까지 기다린 후 콜백 체인으로 처리
+            .whenComplete((result, exception) -> {
+                if (exception != null) {
+                    // Handle exception
+                    System.err.println("Command failed: " + exception.getMessage());
+                } else {
+                    // Handle success
+                    System.out.println("Command succeeded: " + result);
+                    createMemberMoneyPort.createMemberMoney(
+                            new MemberMoney.MembershipId(command.getMembershipId()),
+                            new MemberMoney.MoneyAggregateIdentifier(result.toString())
+                    );
+                }
+            });
     }
 }

@@ -5,8 +5,15 @@ plugins {
     id("com.palantir.docker") version "0.36.0"
 }
 ext{
-    axonVersion = "4.6.0"
+    axonVersion = "4.9.2"
 }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.axonframework:axon-bom:${axonVersion}"
+    }
+}
+
 
 group = 'com.payment.money'
 version = '0.0.1-SNAPSHOT'
@@ -42,6 +49,7 @@ dependencies {
     implementation project(path: ':common')
     implementation 'org.apache.kafka:kafka-clients:3.5.1'
 
+    implementation group: 'org.axonframework', name: 'axon-spring-boot-starter'
 }
 
 tasks.named('test') {
