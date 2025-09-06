@@ -151,11 +151,6 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase,
     }
 
     @Override
-    public void increaseMoneyRequestByEvent(IncreaseMoneyChangingCommand command) {
-
-    }
-
-    @Override
     public void createMemberMoney(CreateMemberMoneyCommand command) {
         //맴버에 Axon Framework에 의존하는 Command를 만듦
         // @CommandHandler로 전달하면 Event Queue에서 관리되는 Axon 객체 값이 됨
@@ -178,4 +173,19 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase,
                 }
             });
     }
+
+    @Override
+    public void increaseMoneyRequestByEvent(IncreaseMoneyChangingCommand command) {
+        commandGateway.send(command)
+             .whenComplete((result, exception) -> {
+            if (exception != null) {
+                // Handle exception
+                System.err.println("Command failed: " + exception.getMessage());
+            } else {
+                // Handle success
+                System.out.println("Command succeeded: " + result);
+            }
+        });
+    }
+
 }

@@ -11,6 +11,23 @@ repositories {
     mavenCentral()
 }
 
+ext{
+    axonVersion = "4.9.2"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.axonframework:axon-bom:${axonVersion}"
+    }
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'com.google.protobuf:protobuf-java:3.21.12'
+        }
+    }
+}
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

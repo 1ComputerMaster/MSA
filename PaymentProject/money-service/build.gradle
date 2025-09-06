@@ -14,7 +14,13 @@ dependencyManagement {
     }
 }
 
-
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'com.google.protobuf:protobuf-java:3.21.12'
+        }
+    }
+}
 group = 'com.payment.money'
 version = '0.0.1-SNAPSHOT'
 
@@ -49,7 +55,8 @@ dependencies {
     implementation project(path: ':common')
     implementation 'org.apache.kafka:kafka-clients:3.5.1'
 
-    implementation group: 'org.axonframework', name: 'axon-spring-boot-starter'
+    implementation 'org.axonframework:axon-spring-boot-starter'  // BOM이 버전 통일
+    implementation 'io.axoniq:axonserver-connector-java'
 }
 
 tasks.named('test') {

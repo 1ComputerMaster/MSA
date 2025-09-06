@@ -2,6 +2,7 @@ package com.payment.money.adapter.out.persistence;
 
 import com.payment.common.PersistenceAdapter;
 import com.payment.money.application.port.in.CreateMemberMoneyPort;
+import com.payment.money.application.port.out.GetMemberMoneyPort;
 import com.payment.money.application.port.out.IncreaseMoneyPort;
 import com.payment.money.domain.MemberMoney;
 import com.payment.money.domain.MoneyChangingRequest;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort, CreateMemberMoneyPort {
+public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort, CreateMemberMoneyPort, GetMemberMoneyPort {
     private final SpringDataMoneyChangingRequestRepository increaseMoneyRepository;
     private final SpringDataMemberMoneyRepository memberMoneyRepository;
 
@@ -59,5 +60,10 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
                 aggregateIdentifier.getAggregateIdentifier()
         );
         memberMoneyRepository.save(entity);
+    }
+
+    @Override
+    public MemberMoneyJpaEntity getMemberMoney(MemberMoney.MemberMoneyId membershipId) {
+        return null;
     }
 }
