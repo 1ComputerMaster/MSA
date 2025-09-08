@@ -64,6 +64,20 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
 
     @Override
     public MemberMoneyJpaEntity getMemberMoney(MemberMoney.MemberMoneyId membershipId) {
-        return null;
+        MemberMoneyJpaEntity entity;
+
+        List<MemberMoneyJpaEntity> entityList = memberMoneyRepository.findByMembershipId(Long.parseLong(membershipId.getMemberMoneyId()));
+        if(!entityList.isEmpty()){
+            entity = entityList.get(0);
+        }else{
+            // 사실 위에서 createMemberMoney 이게 무조건 호출 되기 때문에 올 일이 없긴 함
+            // 방어 코드로 써둠
+            entity = new MemberMoneyJpaEntity(
+                    Long.valueOf(membershipId.getMemberMoneyId()),
+                    0,
+                    ""
+            );
+        }
+        return entity;
     }
 }

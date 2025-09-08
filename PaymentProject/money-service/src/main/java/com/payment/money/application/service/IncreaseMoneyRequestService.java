@@ -3,15 +3,13 @@ package com.payment.money.application.service;
 import com.payment.common.CountDownLatchManager;
 import com.payment.common.RechargingMoneyTask;
 import com.payment.common.SubTask;
+import com.payment.money.adapter.axon.command.IncreaseMemberMoneyCommand;
 import com.payment.money.adapter.axon.command.MemberMoneyCreatedCommand;
 import com.payment.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.payment.money.adapter.out.persistence.MoneyChangingRequestJpaEntity;
 import com.payment.money.adapter.out.persistence.MoneyChangingRequestMapper;
 import com.payment.money.application.port.in.*;
-import com.payment.money.application.port.out.GetMembershipPort;
-import com.payment.money.application.port.out.IncreaseMoneyPort;
-import com.payment.money.application.port.out.MembershipStatus;
-import com.payment.money.application.port.out.SendRecharingMoneyTaskPort;
+import com.payment.money.application.port.out.*;
 import com.payment.money.domain.MemberMoney;
 import com.payment.money.domain.MoneyChangingRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase,
     private final GetMembershipPort membershipPort;
     private final CommandGateway commandGateway;
     private final CreateMemberMoneyPort createMemberMoneyPort;
+    private final GetMemberMoneyPort getMemberMoneyPort;
     @Override
     public MoneyChangingRequest increaseMoney(IncreaseMoneyChangingCommand command) {
         
@@ -176,14 +175,33 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUsecase,
 
     @Override
     public void increaseMoneyRequestByEvent(IncreaseMoneyChangingCommand command) {
-        commandGateway.send(command)
+
+        MemberMoneyJpaEntity memberMoneyJpaEntity = getMemberMoneyPort.getMemberMoney(
+                new MemberMoney.MemberMoneyId(command.getTargetMembershipId())
+        );
+
+        if(Objects.isNull(memberMoneyJpaEntity)){
+            throw new IllegalArgumentException("No MemberMoney found for membership ID: " + command.getTargetMembershipId());
+        }
+
+        String aggregateId = memberMoneyJpaEntity.getAggregateIdentifier();
+
+        commandGateway.send(IncreaseMemberMoneyCommand.builder()
+                        .aggregateIdentifier(aggregateId)
+                        .membershipId(command.getTargetMembershipId())
+                        .amount(command.getAmount())
+                        .build())
              .whenComplete((result, exception) -> {
             if (exception != null) {
                 // Handle exception
                 System.err.println("Command failed: " + exception.getMessage());
             } else {
+                System.out.println("increase money result: " + result);
                 // Handle success
-                System.out.println("Command succeeded: " + result);
+                increaseMoneyPort.increaseMoney(
+                        new MemberMoney.MembershipId(command.getTargetMembershipId()),
+                        command.getAmount()
+                );
             }
         });
     }

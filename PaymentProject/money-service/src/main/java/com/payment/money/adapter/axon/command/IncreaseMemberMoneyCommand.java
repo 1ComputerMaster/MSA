@@ -16,7 +16,7 @@ public class IncreaseMemberMoneyCommand extends SelfValidating<IncreaseMemberMon
     @TargetAggregateIdentifier //Axon Framework가 이 필드를 사용하여 명령을 올바른 애그리거트 인스턴스로 라우팅
     private String aggregateIdentifier;
     @NotNull
-    private String membershipId;
+    private final String membershipId;
     @NotNull
     private final int amount;
 
